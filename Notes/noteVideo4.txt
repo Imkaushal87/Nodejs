@@ -1,0 +1,144 @@
+/*
+📘 Node.js Modules, Globals & Object Destructuring — NOTES
+
+⭐ 1️⃣ require() in Node.js (Module Import)
+
+require("./xyz.js"); // Importing one module into another
+
+⭐ Important Points
+• require() executes the file immediately
+• It does NOT automatically share variables or functions
+• It returns module.exports
+
+⭐ Used for
+• Configuration files
+• Logging
+• Database connections
+• Polyfills / side effects
+
+⭐ 2️⃣ JavaScript Global Objects (Node.js vs Browser)
+
+• console.log(a + b); → Prints sum of a and b
+• console.log("kuvar"); → Prints a string
+
+• console.log(global); → Node.js global object
+• console.log(window); → Browser global object (❌ not in Node.js)
+• console.log(self); → Browser / Web Worker global
+• console.log(frames); → Browser-only
+• console.log(this); → Top-level this (module.exports in Node.js)
+• console.log(globalThis); → Universal global object
+
+⭐ Key Notes
+• window, self, frames ❌ → Browser only
+• global ✅ → Node.js only
+• globalThis ✅ → Works everywhere
+
+⭐ In Node.js
+• globalThis === global → true
+
+⭐ 3️⃣ Object Destructuring in JavaScript
+
+       
+
+⭐ What is Object Destructuring?
+• Object destructuring allows extracting properties from an object into variables using concise syntax
+
+⭐ Without Destructuring (Old Way)
+   const user = {
+             name: "Kuvar",
+             age: 22,
+             role: "Developer"
+        };
+
+         const name = user.name;
+         const age = user.age;
+         const role = user.role;
+
+         console.log(name, age, role);
+
+• Access properties using dot notation
+• More lines of code
+• Less readable
+
+⭐ With Object Destructuring (Modern Way)
+ 
+       const user = {
+          name: "Kuvar",
+          age: 22,
+          role: "Developer"
+      };
+
+      const { name, age, role } = user;
+
+      console.log(name, age, role);
+
+  
+• Extract values directly from object
+• Short and clean syntax
+
+⭐ Benefits
+• Cleaner syntax
+• Less code
+• Better readability
+
+⭐ 4️⃣ Node.js Module Scope (VERY IMPORTANT)
+
+⭐ Core Rules
+• Every file is treated as a separate module
+• Variables and functions are private by default
+• Nothing leaks unless explicitly exported
+
+⭐ This prevents global scope pollution
+
+⭐ 5️⃣ app.js (Main File Explanation)
+
+• require("./xyz.js"); executes the file
+• require("./sum.js") returns exported object
+• Imported object contains only exported members
+
+⭐ Why this works
+• sum.js explicitly exports calculateSum and x
+• require() returns the exported object
+• Access using dot notation → obj.propertyName
+
+⭐ 6️⃣ sum.js (Module File Explanation)
+
+• Top-level code executes immediately
+• Variables are module-private
+• Functions are scoped to the module
+
+⭐ Exporting
+• module.exports is used to share data
+• Only exported values are accessible outside
+
+⭐ 7️⃣ Common Mistakes (Avoid These ❌)
+
+❌ Creating global variables
+• sum = a + b; // BAD (creates global variable)
+
+❌ Wrong export keyword
+• modules.exports = calculateSum; // ❌ wrong
+
+✅ Correct export
+• module.exports = calculateSum;
+
+⭐ 8️⃣ Behind the Scenes (INTERVIEW GOLD ⭐)
+
+⭐ Node.js internally wraps every file like this:
+• (function (exports, require, module, __filename, __dirname) { ... })
+
+⭐ That’s why
+• Variables don’t leak
+• this !== global
+• Modules are isolated
+
+⭐ 9️⃣ One-Line Interview Answers
+
+⭐ require() executes a module and returns module.exports
+⭐ Node.js modules are isolated by default
+⭐ Only exported values are accessible
+⭐ globalThis is the standard global object
+⭐ Object destructuring extracts object properties into variables
+
+
+*?

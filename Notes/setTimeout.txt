@@ -1,0 +1,136 @@
+1️⃣ Line-by-line explanation
+console.log("hello world");
+
+
+Executes immediately
+
+Goes to Call Stack → prints → removed
+
+var a = 1078698;
+var b = 20986;
+
+
+Variable declarations
+
+Stored in memory (V8 heap)
+
+setTimeout(()=>{
+    console.log("setTimeout call right now");
+},0);
+
+
+Registers a timer
+
+0 does NOT mean instant
+
+Callback is placed into Timers Queue
+
+Will execute only after Call Stack is empty
+
+setTimeout(()=>{
+    console.log("setTimeout call after 5 second");
+},5000);
+
+
+Another timer
+
+Minimum delay: 5 seconds
+
+Callback waits in Timers Queue after 5s
+
+function multiply(x,y){
+    const result = a*b;
+    return result;
+}
+
+
+Normal synchronous function
+
+Runs on main thread
+
+var c = multiply(a,b);
+
+
+Function call
+
+Goes to Call Stack
+
+Returns result
+
+console.log("multiplication result is : ",c);
+
+
+Executes immediately
+
+Still part of synchronous code
+
+2️⃣ Actual Output Order 🧾
+hello world
+multiplication result is :  22630651428
+setTimeout call right now
+(set ~5 seconds delay)
+setTimeout call after 5 second
+
+3️⃣ Call Stack + Event Loop Visualization 🔁
+🔹 Phase 1: Main Thread (Call Stack)
+Call Stack:
+-----------
+console.log("hello world")
+setTimeout(0)
+setTimeout(5000)
+multiply()
+console.log("multiplication result")
+
+
+Both setTimeout callbacks are registered, not executed
+
+Call Stack finishes execution
+
+🔹 Phase 2: Event Loop starts
+
+Now Call Stack is empty 👇
+
+🔹 Phase 3: Timers Queue
+After ~0 ms:
+Timers Queue:
+-------------
+setTimeout(0) callback
+
+
+Event Loop picks it → pushes to Call Stack
+
+console.log("setTimeout call right now")
+
+After ~5000 ms:
+Timers Queue:
+-------------
+setTimeout(5000) callback
+
+
+Event Loop picks it → pushes to Call Stack
+
+console.log("setTimeout call after 5 second")
+
+4️⃣ Timeline Diagram 🧠
+Time →
+┌───────────────────────────────────────────────┐
+| hello world                                   |
+| multiply()                                   |
+| multiplication result                        |
+|----------------------------------------------|
+| setTimeout(0) callback                       |
+|-------------------- 5 seconds ---------------|
+| setTimeout(5000) callback                    |
+└───────────────────────────────────────────────┘
+
+5️⃣ Important Interview Points ⭐
+
+setTimeout(0) ≠ immediate execution
+
+Timers execute only after Call Stack is empty
+
+JavaScript is single-threaded
+
+Event Loop controls async execution
+
+Timers are handled in the Timers Phase

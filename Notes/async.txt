@@ -1,0 +1,176 @@
+📄 Code (given)
+const fs = require("fs");
+const https = require("https");
+
+console.log("hello kuvar what are doing");
+
+var a = 1078698;
+var b = 20986;
+
+https.get("https://dummyjson.com/products/1", (res) => {
+    console.log("fetched data successfully");
+});
+
+setTimeout(() => {
+    console.log("setTimeout call after 5 second");
+}, 5000);
+
+fs.readFile("./Notes/noteVideo4.text", "utf8", (err, data) => {
+    console.log("File data", data);
+});
+
+function multiply(x, y){
+    const result = a * b;
+    return result;
+}
+
+var c = multiply(a, b);
+
+console.log("multiplication result is : ", c);
+
+🧠 How Node.js Executes This (IMPORTANT)
+
+Node.js has:
+
+Call Stack
+
+Web APIs (libuv)
+
+Callback Queue / Event Loop
+
+🔹 Step-by-Step Execution (Actual Order)
+1️⃣ require() statements (SYNC)
+const fs = require("fs");
+const https = require("https");
+
+
+Modules loaded synchronously
+
+Execution continues
+
+2️⃣ First console.log (SYNC)
+console.log("hello kuvar what are doing");
+
+
+📤 Output immediately:
+
+hello kuvar what are doing
+
+3️⃣ Variable declarations (SYNC)
+var a = 1078698;
+var b = 20986;
+
+
+Stored in memory — no delay
+
+4️⃣ https.get() (ASYNC – I/O)
+https.get("https://dummyjson.com/products/1", callback);
+
+
+👉 What happens:
+
+Request sent to Web API
+
+Callback is registered
+
+Node.js does NOT wait
+
+Moves to next line immediately
+
+📌 No output yet
+
+5️⃣ setTimeout() (ASYNC – Timer)
+setTimeout(() => {
+    console.log("setTimeout call after 5 second");
+}, 5000);
+
+
+👉 What happens:
+
+Timer starts (5 sec)
+
+Callback stored
+
+Node.js moves on
+
+📌 Not executed now
+
+6️⃣ fs.readFile() (ASYNC – File I/O)
+fs.readFile("./Notes/noteVideo4.text", "utf8", callback);
+
+
+👉 What happens:
+
+File reading starts in background
+
+Callback registered
+
+Node.js continues immediately
+
+7️⃣ Function definition (SYNC)
+function multiply(x, y) { ... }
+
+
+Just stored in memory
+
+8️⃣ Function call (SYNC & BLOCKING)
+var c = multiply(a, b);
+
+
+Node.js stops here
+
+Computes multiplication
+
+Stores result in c
+
+9️⃣ Final console.log (SYNC)
+console.log("multiplication result is : ", c);
+
+
+📤 Output:
+
+multiplication result is :  22643078428
+
+🔁 Now Call Stack is Empty → Event Loop Starts
+
+Node.js checks async callbacks.
+
+🔹 Callback Execution Order
+✅ fs.readFile (FAST I/O → usually first)
+File data <file content>
+
+✅ https.get
+fetched data successfully
+
+⏰ setTimeout (after 5 seconds)
+setTimeout call after 5 second
+
+🧾 FINAL OUTPUT ORDER (Most Likely)
+hello kuvar what are doing
+multiplication result is :  22643078428
+File data <file content>
+fetched data successfully
+setTimeout call after 5 second
+
+
+⚠️ Note: fs.readFile & https.get order can swap (both async).
+
+🧠 Call Stack + Event Loop Visualization
+CALL STACK (sync first)
+----------------------
+console.log
+multiply()
+console.log
+----------------------
+
+WEB APIs
+--------
+https.get
+fs.readFile
+setTimeout
+
+EVENT LOOP
+----------
+fs.readFile callback
+https.get callback
+setTimeout callback

@@ -1,0 +1,97 @@
+📄 Code
+console.log("Hello Node js");
+
+var a = 1078698;
+var b = 20986;
+
+function multiply(x, y){
+    const result = a * b;
+    return result;
+}
+
+var c = multiply(a, b);
+
+console.log("multiplication result is : ", c);
+
+🔹 What does synchronous mean?
+
+👉 Each statement executes one after another
+👉 Next line waits until the previous line finishes
+
+No jumping, no background work, no callbacks here.
+
+🧠 Synchronous Execution Flow (Line by Line)
+1️⃣ console.log("Hello Node js");
+
+Printed immediately
+
+Output:
+
+Hello Node js
+
+
+Execution moves to next line
+
+2️⃣ Variable declarations
+var a = 1078698;
+var b = 20986;
+
+
+Memory is allocated
+
+Values assigned
+
+No delay, no async work
+
+3️⃣ Function definition
+function multiply(x, y){
+    const result = a * b;
+    return result;
+}
+
+
+Function is defined, not executed
+
+Stored in memory
+
+Control moves on
+
+4️⃣ Function call (BLOCKING step)
+var c = multiply(a, b);
+
+
+👉 Node.js stops here until multiply() finishes.
+
+Inside the function:
+
+a * b is calculated
+
+Result is returned
+
+Value stored in c
+
+📌 Nothing else runs until this completes
+
+5️⃣ Final console.log
+console.log("multiplication result is : ", c);
+
+
+Prints the computed value
+
+Output:
+
+multiplication result is :  22643078428
+
+⏱️ Call Stack View (Synchronous)
+|--------------------|
+| console.log        |
+| multiply()         |
+| console.log        |
+|--------------------|
+
+
+👉 Each function must finish before the next starts.
+
+✅ Final Output
+Hello Node js
+multiplication result is :  22643078428

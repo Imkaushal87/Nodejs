@@ -1,0 +1,170 @@
+1️⃣ Line-by-line explanation
+//const crypto = require("crypto")
+const crypto = require("node:crypto");
+
+
+Imports Node.js crypto module
+
+node:crypto is the modern, explicit way (recommended)
+
+Used for encryption, hashing, key generation
+
+console.log("hello world");
+
+
+Prints immediately
+
+Goes to Call Stack → executes → removed
+
+var a = 1078698;
+var b = 20986;
+
+
+Normal variable declarations
+
+Stored in memory (V8 heap)
+
+//Password-Based Key Derivation Function 2 ---(pbkdf2)
+//sync method never use becaus main thred is blok
+crypto.pbkdf2Sync("password","salt",5000000,50,"sha512");
+
+🔴 VERY IMPORTANT
+
+Synchronous function
+
+Blocks the main thread
+
+Uses CPU heavily (5 million iterations 😵)
+
+👉 While this runs:
+
+❌ No setTimeout
+
+❌ No async callbacks
+
+❌ No event loop
+
+That’s why sync crypto is discouraged in production
+
+setTimeout(()=>{
+    console.log("setTimeout call right now");
+},0);
+
+
+Timer API
+
+Even 0ms does NOT mean immediate
+
+Callback goes to Timer Queue, waits for:
+
+Call Stack to become empty
+
+console.log("first Key generated");
+
+
+Executes immediately after pbkdf2Sync finishes
+
+Still part of main thread
+
+//Async function
+crypto.pbkdf2("password","sait",500000,50,"sha512",(err,Key)=>{
+    console.log("Second Key generated");
+})
+
+✅ Async crypto
+
+Offloaded to libuv thread pool
+
+Does NOT block main thread
+
+Callback goes to Poll Queue after completion
+
+function multiply(x,y){
+    const result = a*b;
+    return result;
+}
+
+
+Simple function
+
+Runs synchronously
+
+var c = multiply(a,b);
+
+
+Function call
+
+Goes to Call Stack
+
+Returns result
+
+console.log("multiplication result is : ",c);
+
+
+Prints result
+
+End of synchronous code
+
+2️⃣ What blocks vs what doesn’t
+Code	Blocks Main Thread?
+console.log	❌ No
+pbkdf2Sync	✅ YES (dangerous)
+setTimeout	❌ No
+pbkdf2	❌ No (thread pool)
+multiply()	❌ No
+3️⃣ Call Stack + Event Loop Visualization 🔁
+🧠 Execution Order (REAL ORDER)
+1. hello world
+2. (pbkdf2Sync runs — BLOCKING)
+3. first Key generated
+4. multiplication result is : XXXXX
+5. setTimeout call right now
+6. Second Key generated
+
+🧱 Phase-by-Phase Breakdown
+🔹 Step 1: Call Stack (Main Thread)
+Call Stack:
+-----------
+console.log("hello world")
+pbkdf2Sync(...)   <-- blocks here for long time
+setTimeout(...)
+console.log("first Key generated")
+multiply()
+console.log("multiplication result")
+
+
+⚠️ During pbkdf2Sync:
+
+Event loop is frozen
+
+🔹 Step 2: After main code finishes
+
+Now Call Stack is empty 👇
+
+🔹 Step 3: Event Loop kicks in
+Event Loop:
+-----------
+Timers Queue  → setTimeout callback
+Poll Queue    → pbkdf2 async callback
+
+
+Execution order:
+
+1️⃣ setTimeout callback
+2️⃣ pbkdf2 callback (because it finishes later)
+
+📊 Visual Diagram
+┌──────────────┐
+│  Call Stack  │
+└──────┬───────┘
+       │
+       ▼
+┌────────────────────────────┐
+│        Event Loop           │
+└──────┬───────────┬─────────┘
+       │           │
+       ▼           ▼
+┌──────────┐   ┌──────────┐
+│ Timers   │   │ Poll     │
+│ setTimeout│  │ pbkdf2   │
+└──────────┘   └──────────┘
