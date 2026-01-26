@@ -1,13 +1,15 @@
 /*
 
-Promise
-a =  100
+a = 100
 This is file last line
 Process nextTick
 Promise
 Time expired
 Set Immediate
-File read call back
+this file is readed
+2nd Process nextTick
+2nd Set Immediate
+2nd Time expired
 
 */
 const fs = require("fs");
@@ -20,24 +22,22 @@ setImmediate(()=>{
 
 Promise.resolve("Promise").then(console.log);
 
-/*
-
-console.log("Promise") is executed IMMEDIATELY
-
-Its return value (undefined) is passed to .then()
-
-So this line behaves like:
-
-console.log("Promise"); // runs immediately
-Promise.resolve("Promise").then(undefined);
-
-*/
-
-Promise.resolve("Promise").then(console.log("Promise"));
-
 
 fs.readFile("./file.txt","utf8",()=>{
-    console.log("File read call back");
+    setTimeout(()=>{
+        console.log("2nd Time expired");
+    });
+
+    process.nextTick(()=>{
+       console.log("2nd Process nextTick");
+    });
+
+    setImmediate(()=>{
+        console.log("2nd Set Immediate");
+    });
+
+    console.log("this file is readed");
+
 });
 
 
