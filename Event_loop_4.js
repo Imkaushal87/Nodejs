@@ -1,8 +1,8 @@
 /*
 This is file last line
-nextTick
-Promise
+ nextTick
 inner nextTick
+Promise
 Time expired
 Set Immediate
 File read call back
