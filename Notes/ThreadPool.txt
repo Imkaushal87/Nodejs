@@ -1,0 +1,78 @@
+crypto.pbkdf2 runs inside libuv’s thread pool
+
+Default thread pool size = 4
+
+Since 5 tasks are submitted:
+
+4 tasks execute in parallel
+
+1 task waits in the queue
+
+
+
+
+const fs = require("fs");
+const crypto = require("crypto");
+
+crypto.pbkdf2("password","salt",500000,50,"sha512",(err,key)=>{
+    console.log("1 - Crypto PBKDF2 done");
+});
+
+
+crypto.pbkdf2("password","salt",500000,50,"sha512",(err,key)=>{
+    console.log("2 - Crypto PBKDF2 done");
+});
+
+
+crypto.pbkdf2("password","salt",500000,50,"sha512",(err,key)=>{
+    console.log("3 - Crypto PBKDF2 done");
+});
+
+crypto.pbkdf2("password","salt",500000,50,"sha512",(err,key)=>{
+    console.log("4 - Crypto PBKDF2 done");
+});
+
+crypto.pbkdf2("password","salt",500000,50,"sha512",(err,key)=>{
+    console.log("5 - Crypto PBKDF2 done");
+});
+
+
+
+
+
+
+This limits the libuv thread pool to only 2 worker threads
+
+By default, Node.js uses 4 threads
+
+Now only 2 PBKDF2 tasks can run in parallel
+
+
+
+
+const fs = require("fs");
+const crypto = require("crypto");
+
+process.env.UV_THREADPOOL_SIZE = 2
+
+crypto.pbkdf2("password","salt",500000,50,"sha512",(err,key)=>{
+    console.log("1 - Crypto PBKDF2 done");
+});
+
+
+crypto.pbkdf2("password","salt",500000,50,"sha512",(err,key)=>{
+    console.log("2 - Crypto PBKDF2 done");
+});
+
+
+crypto.pbkdf2("password","salt",500000,50,"sha512",(err,key)=>{
+    console.log("3 - Crypto PBKDF2 done");
+});
+
+crypto.pbkdf2("password","salt",500000,50,"sha512",(err,key)=>{
+    console.log("4 - Crypto PBKDF2 done");
+});
+
+crypto.pbkdf2("password","salt",500000,50,"sha512",(err,key)=>{
+    console.log("5 - Crypto PBKDF2 done");
+});
